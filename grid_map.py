@@ -48,8 +48,8 @@ class GridMap:
         """ Obstacles dicretized map """
         # rectangular obstacles
         for obstacle in obstacles:
-            x1 = self.meters2grid(obstacle[0][0]); x2 = self.meters2grid(obstacle[2][0])
-            y1 = self.meters2grid(obstacle[0][1]); y2 = self.meters2grid(obstacle[2][1])
+            x1 = self.meters2grid(obstacle[0][1]); x2 = self.meters2grid(obstacle[2][1])
+            y1 = self.meters2grid(obstacle[0][0]); y2 = self.meters2grid(obstacle[2][0])
             if x1 > x2: tmp = x2; x2 = x1; x1 = tmp
             if y1 > y2: tmp = y2; y2 = y1; y1 = tmp
             self.gmap[x1:x2, y1:y2] = 1
@@ -81,11 +81,12 @@ class GridMap:
                             self.map_resolution_m - self.map_center
         return pose_meters
 
-    def draw_map(self, obstacles):
-        ax = plt.gca()
+    def draw_map(self, obstacles,ax=None):
+        if ax==None:
+           ax = plt.gca()
         w = self.map_width_m; l = self.map_length_m
-        ax.set_xlim([-w/2, w/2])
-        ax.set_ylim([-l/2, l/2])
+        # ax.set_xlim([-w/2, w/2])
+        # ax.set_ylim([-l/2, l/2])
         boundaries = self.flight_area_vertices
         ax.add_patch( Polygon(boundaries, linewidth=2, edgecolor='k',facecolor='none') )
         for k in range(len(obstacles)):

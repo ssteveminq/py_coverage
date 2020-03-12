@@ -17,42 +17,47 @@ from grid_based_sweep_coverage_path_planner import planning
 import time
 from tools import define_polygon, polygon_contains_point
 
-def plot_robot(pose, params):
-	r = params.sensor_range_m
-        ax = plt.gca()
-	plt.plot([pose[0]-r*np.cos(pose[2]), pose[0]+r*np.cos(pose[2])],
-                [pose[1]-r*np.sin(pose[2]), pose[1]+r*np.sin(pose[2])], '--', color='b')
-	plt.plot([pose[0]-r*np.cos(pose[2]+np.pi/2), pose[0]+r*np.cos(pose[2]+np.pi/2)],
-                [pose[1]-r*np.sin(pose[2]+np.pi/2), pose[1]+r*np.sin(pose[2]+np.pi/2)], '--', color='b')
-        # plt.plot(pose[0], pose[1], 'ro', markersize=5)
-        # robot_center_x =pose[0]-r*np.cos(pose[2])
-        # robot_center_y =pose[1]-r*np.sin(pose[2])
-        # rect = Rectangle((robot_center_x , robot_center_y),0.2,0.2,linewidth=1,edgecolor='b', facecolor='b', alpha=0.5)
-        # t2 = mpl.transforms.Affine2D().rotate_around(robot_center_x,robot_center_y,pose[2])+ax.transData
-        # rect.set_transform(t2)
-        circle= Circle((pose[0], pose[1]),r,linewidth=1,edgecolor='k',facecolor='k',alpha=0.4 )
-        # ax.add_patch(rect)
-        ax.add_patch(circle)
-        # plt.plot(pose[0], pose[1], 'ro', markersize=40, alpha=0.1)
-        # print("plot_circle")
-        plt.arrow(pose[0], pose[1], 0.05 * np.cos(pose[2]), 0.05 * np.sin(pose[2]),
-              head_length=0.1, head_width=0.1)
+fig,axes=plt.subplots(nrows=2,ncols=1,figsize=(10,20))
 
-def plot_grid_map(grid_map, ax=None):
-
-        grid_data = np.reshape(np.array(grid_map.gmap), (int(grid_map.wdith), int(grid_map.height)))
+def plot_grid_map(gridmap, ax=None):
+        # print("plot_grid_map")
+        all_axes=plt.gcf().get_axes()
+        ax=all_axes[1]
+        grid_data = np.reshape(np.array(self.data), (int(self.height), int(self.width)))
         if not ax:
             fig, ax = plt.subplots()
         heat_map = ax.pcolor(grid_data, cmap="Blues", vmin=0.0, vmax=1.0)
-        plt.axis("equal")
-
+        # plt.axis("equal")
         return heat_map
 
 
 
+def plot_robot(pose, params):
+	r = params.sensor_range_m
+        # plt.axis("equal")
+        # ax = plt.gca()
+        axes[1].plot([pose[0]-r*np.cos(pose[2]), pose[0]+r*np.cos(pose[2])],
+                [pose[1]-r*np.sin(pose[2]), pose[1]+r*np.sin(pose[2])], '--', color='b')
+        axes[1].plot([pose[0]-r*np.cos(pose[2]+np.pi/2), pose[0]+r*np.cos(pose[2]+np.pi/2)],
+                [pose[1]-r*np.sin(pose[2]+np.pi/2), pose[1]+r*np.sin(pose[2]+np.pi/2)], '--', color='b')
+        
+	# plt.plot([pose[0]-r*np.cos(pose[2]), pose[0]+r*np.cos(pose[2])],
+                # [pose[1]-r*np.sin(pose[2]), pose[1]+r*np.sin(pose[2])], '--', color='b')
+	# plt.plot([pose[0]-r*np.cos(pose[2]+np.pi/2), pose[0]+r*np.cos(pose[2]+np.pi/2)],
+                # [pose[1]-r*np.sin(pose[2]+np.pi/2), pose[1]+r*np.sin(pose[2]+np.pi/2)], '--', color='b')
+        # plt.plot(pose[0], pose[1], 'ro', markersize=5)
+        circle= Circle((pose[0], pose[1]),r,linewidth=1,edgecolor='k',facecolor='k',alpha=0.4 )
+        axes[1].add_patch(circle)
+        # plt.plot(pose[0], pose[1], 'ro', markersize=40, alpha=0.1)
+        # print("plot_circle")
+        # ax.arrow(pose[0], pose[1], 0.05 * np.cos(pose[2]), 0.05 * np.sin(pose[2]),
+              # head_length=0.1, head_width=0.1)
+        axes[1].arrow(pose[0], pose[1], 0.05 * np.cos(pose[2]), 0.05 * np.sin(pose[2]),
+              head_length=0.1, head_width=0.1)
+
+
 def obstacle_check(pose, gridmap, params):
 	gmap = gridmap
-
 	r = int(100*params.sensor_range_m)
 	back = [pose[0]-r*np.cos(pose[2]), pose[1]-r*np.sin(pose[2])]
 	front = [pose[0]+r*np.cos(pose[2]), pose[1]+r*np.sin(pose[2])]
@@ -130,19 +135,38 @@ def slow_down(state, params, dv=0.1):
 	return state
 
 def visualize(traj, pose, params):
-	plt.plot(traj[:,0], traj[:,1], 'g')
-	plot_robot(pose, params)
-	plt.legend()
+        # axes = plt.gca()
+        # plt.plot(traj[:,0], traj[:,1], 'g')
+        # plot_robot(pose, params)
+        # plt.legend()
+	axes[1].set_xlim([-2.5, 2.5])
+	axes[1].set_ylim([-2.5, 2.5])
+        axes[1].plot(traj[:,0], traj[:,1], 'g')
+        # plt.axis("equal")
+        plot_robot(pose, params)
+        axes[1].legend()
 
 def visualize_coverage(poseset):
-    ax = plt.gca()
+    # ax = plt.gca()
     for pose in poseset:
         circle= Circle((pose[0], pose[1]),0.25,linewidth=1,edgecolor='k',facecolor='k',alpha=0.15 )
         # ax.add_patch(rect)
-        ax.add_patch(circle)
+        # ax.add_patch(circle)
+        axes[1].add_patch(circle)
         # plt.plot(pose[0], pose[1], 'ro', markersize=30, alpha=0.10)
-def update_coveragemap(pose,covergaemap):
-    print("coverage")
+def update_coveragemap(pose,coveragemap):
+    coveragemap.set_value_from_xy_pos(pose[0],pose[1],5.0)
+
+def draw_obstacles_gridmap(gridmap,obstacles):
+    ax = plt.gca()
+    w = gridmap.map_width_m; l = gridmap.map_length_m
+    # ax.set_xlim([-w/2, w/2])
+    # ax.set_ylim([-l/2, l/2])
+    boundaries = gridmap.flight_area_vertices
+    ax.add_patch( Polygon(boundaries, linewidth=2, edgecolor='k',facecolor='none') )
+    for k in range(len(obstacles)):
+        ax.add_patch( Polygon(obstacles[k]+gridmap.map_center, color='k', zorder=10) )
+
 
 
 def motion(state, goal, params):
@@ -150,12 +174,12 @@ def motion(state, goal, params):
 	dx = goal[0] - state[0]
 	dy = goal[1] - state[1]
 	goal_yaw = math.atan2(dy, dx)
-	K_theta = 1.5
+	K_theta = 2.0
 	state[4] = K_theta*math.sin(goal_yaw - state[2]) # omega(rad/s)
 	state[2] += params.dt*state[4] # yaw(rad)
 
 	dist_to_goal = np.linalg.norm(goal - state[:2])
-	K_v = 0.05
+	K_v = 0.1
 	state[3] += K_v*dist_to_goal
 	if state[3] >= params.max_vel: state[3] = params.max_vel
 	if state[3] <= params.min_vel: state[3] = params.min_vel
@@ -174,12 +198,12 @@ def collision_avoidance(state, gridmap, params):
 	if boundary['right'] or boundary['front']:
 		# state = back_shift(state, 0.03)
 		state = slow_down(state, params)
-		state = turn_left(state, np.radians(30))
+		state = turn_left(state, np.radians(40))
 		# state = forward_shift(state, 0.02)
 	elif boundary['left']:
 		# state = back_shift(state, 0.03)
 		state = slow_down(state, params)
-		state = turn_right(state, np.radians(30))
+		state = turn_right(state, np.radians(40))
 		# state = forward_shift(state, 0.02)
 	return state
 
@@ -224,25 +248,27 @@ def main():
 	state = np.array([0, 0.2, np.pi/2, 0.0, 0.0])
 	traj = state[:2]
 	params = Params()
-	plt.figure(figsize=(10,10))
+	# plt.figure(figsize=(10,10))
+
 	flight_area_vertices = define_flight_area(state[:2])
         posset=[]
 	# flight_area_vertices = np.array([[-1, -1], [-0.3, -1], [-0.3, -0.4], [0.3, -0.4], [0.3, -1], [1,-1], [1,1], [-1,1]])
 	gridmap = GridMap(flight_area_vertices, state[:2])
-	# gridmap.add_obstacles_to_grid_map(obstacles) //mk
+        gridmap.add_obstacles_to_grid_map(obstacles)
 
         #obstacle x, y coordinates
         ox = flight_area_vertices[:,0].tolist() + [flight_area_vertices[0,0]]
         oy = flight_area_vertices[:,1].tolist() + [flight_area_vertices[0,1]]
         reso = params.sweep_resolution
-        goal_x, goal_y, covmap = planning(ox, oy, reso)
+        goal_x, goal_y, gmap, covmap = planning(ox, oy, reso)
+        # covmap.plot_grid_map(axes[0])
 
 	# goal = [x, y], m
 	goali = 0
 	goal = [goal_x[goali], goal_y[goali]]
 	t_prev_goal = time.time()
-
 	gridmap.draw_map(obstacles)
+        iter=0
 
 	# while True:
 	for _ in range(params.numiters):
@@ -270,13 +296,22 @@ def main():
 		traj = np.vstack([traj, state[:2]])
 		
 		if params.animate:
-			plt.cla()
-			gridmap.draw_map(obstacles)
-			plt.plot(goal_x, goal_y)
-			plt.plot(goal[0], goal[1], 'ro', markersize=12, label='Goal position', zorder=20)
-			visualize(traj, state, params)
+                        axes[1].cla()
+                        # plt.cla()
+                        gridmap.draw_map(obstacles,axes[1]) #mk
+                        axes[1].plot(goal_x, goal_y)
+                        axes[1].plot(goal[0], goal[1], 'ro', markersize=12, label='Goal position', zorder=20)
+                        visualize(traj, state, params)
                         visualize_coverage(posset)
-			plt.pause(0.1)
+                        # plt.plot(goal_x, goal_y)
+                        # plt.plot(goal[0], goal[1], 'ro', markersize=12, label='Goal position', zorder=20)
+                        # visualize(traj, state, params)
+                        # visualize_coverage(posset)
+                        covmap.plot_grid_map(axes[0])
+                        plt.pause(0.1)
+                # iter=iter+1
+                # if iter>50:
+                    # covmap2.plot_grid_map(axes[0])
 
 	print('Mission is complete!')
 	plt.plot(goal_x, goal_y)

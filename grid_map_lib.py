@@ -210,24 +210,40 @@ class GridMap:
 
     def plot_grid_map(self, ax=None):
 
-        print("plot_grid_map")
+        # print("plot_grid_map")
         grid_data = np.reshape(np.array(self.data), (int(self.height), int(self.width)))
         if not ax:
             fig, ax = plt.subplots()
-        heat_map = ax.pcolor(grid_data, cmap="Blues", vmin=0.0, vmax=1.0)
-        plt.axis("equal")
-        plt.show()
-
+        heat_map = ax.pcolor(grid_data, cmap="Blues", vmin=0.0, vmax=10.0)
+	ax.set_xlim([0, int(self.width)])
+	ax.set_ylim([0, int(self.height)])
+        # plt.axis("equal")
+        # plt.show()
         return heat_map
 
 
 def test_polygon_set():
     ox = [0.0, 20.0, 50.0, 100.0, 130.0, 40.0]
     oy = [0.0, -20.0, 0.0, 30.0, 60.0, 80.0]
+    center_x = np.mean(ox)
+    center_y = np.mean(oy)
 
-    grid_map = GridMap(600, 290, 0.7, 60.0, 30.5)
+    grid_map = GridMap(600, 290, 0.7, center_x, center_y)
 
     grid_map.set_value_from_polygon(ox, oy, 1.0, inside=False)
+
+    grid_map.set_value_from_xy_pos(20.0,2.0,0.5)
+    grid_map.set_value_from_xy_pos(21.0,2.0,0.5)
+    grid_map.set_value_from_xy_pos(22.0,2.0,0.5)
+    grid_map.set_value_from_xy_pos(23.0,2.0,0.5)
+    grid_map.set_value_from_xy_pos(24.0,2.0,0.5)
+    grid_map.set_value_from_xy_pos(25.0,2.0,0.5)
+    grid_map.set_value_from_xy_pos(25.0,3.0,0.5)
+    grid_map.set_value_from_xy_pos(25.0,4.0,0.5)
+    grid_map.set_value_from_xy_pos(25.0,5.0,0.5)
+    grid_map.set_value_from_xy_pos(25.0,6.0,0.5)
+    grid_map.set_value_from_xy_pos(25.0,7.0,0.5)
+    grid_map.set_value_from_xy_pos(25.0,8.0,0.5)
 
     grid_map.plot_grid_map()
 

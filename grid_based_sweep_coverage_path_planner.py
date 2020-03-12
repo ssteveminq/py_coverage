@@ -161,17 +161,17 @@ def search_free_grid_index_at_edge_y(grid_map, from_upper=False):
     xinds = []
 
     if from_upper:
-        xrange = range(int(grid_map.height))[::-1]
-        yrange = range(int(grid_map.width))[::-1]
+        yrange = range(int(grid_map.height))[::-1]
+        xrange = range(int(grid_map.width))[::-1]
     else:
-        xrange = range(int(grid_map.height))
-        yrange = range(int(grid_map.width))
+        yrange = range(int(grid_map.height))
+        xrange = range(int(grid_map.width))
 
     print("x range", xrange)
     print("y range", yrange)
     print("-------------")
-    for iy in xrange:
-        for ix in yrange:
+    for iy in yrange:
+        for ix in xrange:
             if not grid_map.check_occupied_from_xy_index(ix, iy):
                 yind = iy
                 xinds.append(ix)
@@ -181,11 +181,15 @@ def search_free_grid_index_at_edge_y(grid_map, from_upper=False):
     return xinds, yind
 
 #grid map for search region
-def setup_grid_map(ox, oy, reso, sweep_direction, offset_grid=25):
+def setup_grid_map(ox, oy, reso, sweep_direction, offset_grid=5):
     width = math.ceil((max(ox) - min(ox)) / reso) + offset_grid
     height = math.ceil((max(oy) - min(oy)) / reso) + offset_grid
     center_x = np.mean(ox)
     center_y = np.mean(oy)
+    # center_x = np.average(ox[0:len(ox)-1])
+    # center_y = np.average(oy[0:len(oy)-1])
+    # print("oxs ", ox[0:len(ox)-1])
+    # print("oys ", oy[0:len(ox)-1])
     print("width, height, center x, center y:", width,height,center_x,center_y)
 
     #polygon_boundary mk
@@ -194,7 +198,6 @@ def setup_grid_map(ox, oy, reso, sweep_direction, offset_grid=25):
     grid_map.set_value_from_polygon(ox, oy, 1.0, inside=False)
     #This expand_grid function makes offset from the polygon boundaries
     #grid_map.expand_grid()
-
     xinds_goaly = []
     goaly = 0
     if sweep_direction == SweepSearcher.SweepDirection.UP:
@@ -248,20 +251,20 @@ def planning(ox, oy, reso,
              sweeping_direction=SweepSearcher.SweepDirection.UP,
              ):
     sweep_vec, sweep_start_posi = find_sweep_direction_and_start_posi(ox, oy)
-    print("sweep_vec")
-    print(sweep_vec)
-    print("sweep_start_posi")
-    print(sweep_start_posi)
-
     rox, roy = convert_grid_coordinate(ox, oy, sweep_vec, sweep_start_posi)
+    #gmap for finding sweep path
     gmap, xinds_goaly, goaly = setup_grid_map(rox, roy, reso, sweeping_direction)
+
     sweep_searcher = SweepSearcher(moving_direction, sweeping_direction, xinds_goaly, goaly)
     px, py = sweep_path_search(sweep_searcher, gmap)
     # print("swep path search result:", px,py)
-
     rx, ry = convert_global_coordinate(px, py, sweep_vec, sweep_start_posi)
-
     # print("goal:", rx,ry)
+
+    #covmap for checking coverage
+    covmap, xinds_goaly, goaly = setup_grid_map(ox, oy, reso, sweeping_direction,3)
+    covmap.set_value_from_polygon(ox, oy, 2.0, inside=False)
+
     print("Path length:", len(rx))
 
-    return rx, ry, gmap
+    return rx, ry, gmap, covmap

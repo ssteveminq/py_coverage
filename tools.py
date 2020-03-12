@@ -9,13 +9,15 @@ def polygon_contains_point(point, polygon_vertices):
 	polygon = Polygon(polygon_vertices)
 	return polygon.contains(point)
 
-def define_polygon(num_pts=4):
+def define_polygon(num_pts=4, ax=None):
 	def tellme(s):
             print(s)
             plt.title(s, fontsize=16)
             plt.draw()
 
-	ax = plt.gca()
+        if ax==None:
+            ax = plt.gca()
+
 	plt.setp(ax, autoscale_on=0)
 	ax.set_xlim([-2.5, 2.5])
 	ax.set_ylim([-2.5, 2.5])
