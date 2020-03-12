@@ -149,7 +149,7 @@ def visualize(traj, pose, params):
 def visualize_coverage(poseset):
     # ax = plt.gca()
     for pose in poseset:
-        circle= Circle((pose[0], pose[1]),0.25,linewidth=1,edgecolor='k',facecolor='k',alpha=0.15 )
+        circle= Circle((pose[0], pose[1]),0.25,linewidth=1,edgecolor='r',facecolor='r',alpha=0.15 )
         # ax.add_patch(rect)
         # ax.add_patch(circle)
         axes[1].add_patch(circle)
@@ -174,7 +174,7 @@ def motion(state, goal, params):
 	dx = goal[0] - state[0]
 	dy = goal[1] - state[1]
 	goal_yaw = math.atan2(dy, dx)
-	K_theta = 2.0
+	K_theta = 3.2
 	state[4] = K_theta*math.sin(goal_yaw - state[2]) # omega(rad/s)
 	state[2] += params.dt*state[4] # yaw(rad)
 
@@ -308,9 +308,10 @@ def main():
                         # visualize(traj, state, params)
                         # visualize_coverage(posset)
                         covmap.plot_grid_map(axes[0])
-                        plt.pause(0.1)
-                # iter=iter+1
-                # if iter>50:
+                        plt.pause(0.01)
+                iter=iter+1
+                if iter==1:
+                    plt.savefig('planned_coverage_path.png',dpi=300)
                     # covmap2.plot_grid_map(axes[0])
 
 	print('Mission is complete!')
