@@ -11,12 +11,12 @@ def polygon_contains_point(point, polygon_vertices):
 
 def define_polygon(num_pts=4, ax=None):
 	def tellme(s):
-            print(s)
-            plt.title(s, fontsize=16)
-            plt.draw()
+		print(s)
+		plt.title(s, fontsize=16)
+		plt.draw()
 
-        if ax==None:
-            ax = plt.gca()
+		if ax==None:
+			ax = plt.gca()
 
 	plt.setp(ax, autoscale_on=0)
 	ax.set_xlim([-2.5, 2.5])
@@ -27,24 +27,24 @@ def define_polygon(num_pts=4, ax=None):
 	plt.waitforbuttonpress()
 
 	while True:
-            pts = []
-            while len(pts) < num_pts:
-                tellme('Select %d corners with mouse'%num_pts)
-                pts = np.asarray(plt.ginput(num_pts, timeout=-1))
-                if len(pts) < num_pts:
-                    tellme('Too few points, starting over')
-                    time.sleep(1)  # Wait a second
+			pts = []
+			while len(pts) < num_pts:
+				tellme('Select %d corners with mouse'%num_pts)
+				pts = np.asarray(plt.ginput(num_pts, timeout=-1))
+				if len(pts) < num_pts:
+					tellme('Too few points, starting over')
+					time.sleep(1)  # Wait a second
 
-            ph = plt.fill(pts[:, 0], pts[:, 1], 'y', lw=2)
+			ph = plt.fill(pts[:, 0], pts[:, 1], 'y', lw=2)
 
-            tellme('Happy? Key click for yes, mouse click for no')
+			tellme('Happy? Key click for yes, mouse click for no')
 
-            if plt.waitforbuttonpress():
-                break
+			if plt.waitforbuttonpress():
+				break
 
-            # Get rid of fill
-            for p in ph:
-	        p.remove()
+			# Get rid of fill
+			for p in ph:
+				p.remove()
 
 	return pts
 

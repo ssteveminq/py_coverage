@@ -215,8 +215,8 @@ class GridMap:
         if not ax:
             fig, ax = plt.subplots()
         heat_map = ax.pcolor(grid_data, cmap="Blues", vmin=0.0, vmax=10.0)
-	ax.set_xlim([0, int(self.width)])
-	ax.set_ylim([0, int(self.height)])
+        ax.set_xlim([0, int(self.width)])
+        ax.set_ylim([0, int(self.height)])
         # plt.axis("equal")
         # plt.show()
         return heat_map
