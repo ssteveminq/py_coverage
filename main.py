@@ -33,7 +33,7 @@ def plot_grid_map(gridmap, ax=None):
 
 
 def plot_robot(pose, params):
-	print("robot")
+	# print("robot")
 	r = params.sensor_range_m
 	# plt.axis("equal")
 	# ax = plt.gca()
