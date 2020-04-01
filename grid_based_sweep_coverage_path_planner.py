@@ -257,7 +257,6 @@ def planning(ox, oy, reso,
 
     sweep_searcher = SweepSearcher(moving_direction, sweeping_direction, xinds_goaly, goaly)
     px, py = sweep_path_search(sweep_searcher, gmap)
-    # print("swep path search result:", px,py)
     rx, ry = convert_global_coordinate(px, py, sweep_vec, sweep_start_posi)
     # print("goal:", rx,ry)
 
